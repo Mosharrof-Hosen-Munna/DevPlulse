@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { issueController } from "./issue.controller";
+
+const router = Router();
+
+router.get('/:id',issueController.getSingleIssue)
+router.post('/', issueController.createIssue)
+router.patch('/:id', issueController.updateIssue)
+router.delete('/:id', issueController.deleteIssue)
+
+
+export const issueRoutes = router;
