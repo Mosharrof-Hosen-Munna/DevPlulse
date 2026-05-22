@@ -8,6 +8,7 @@ dotenv.config({
 const config = {
   PORT: process.env.PORT || 5000,
   NEON_DATABASE_URL: process.env.NEON_DATABASE_URL || '',
+  JWT_SECRET: process.env.JWT_SECRET
 };
 
 export default config;
