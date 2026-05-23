@@ -123,9 +123,9 @@ const deleteIssue = async (req:Request, res: Response) => {
     });
   } catch (error: any) {
 
-    return res.status(500).json({
+    return res.status(403).json({
       success: false,
-      message: "Internal server error",
+      message: error.message,
     });
   }
 }
