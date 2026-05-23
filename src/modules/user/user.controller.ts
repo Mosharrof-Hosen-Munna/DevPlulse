@@ -11,9 +11,12 @@ const getAllUsers = async (req: Request, res: Response) => {
       message: "User logged in successfully",
       data: users,
     });
-    } catch (error: any) {
-        console.log(error.message
-        )
+    } catch (error:any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            errors: error
+        });
     }
 }
 

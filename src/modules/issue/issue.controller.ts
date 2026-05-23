@@ -102,7 +102,7 @@ const updateIssue = async (req:Request, res: Response) => {
       success: true,
       data: updatedIssue,
     });
-    } catch (error:any) {
+    } catch (error: any) {
         res.status(500).json({
             success: false,
             message: error.message,
