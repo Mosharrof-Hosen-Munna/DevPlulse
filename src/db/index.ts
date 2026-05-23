@@ -43,7 +43,9 @@ export const initDB = async () => {
         status VARCHAR(20) NOT NULL DEFAULT 'open'
           CHECK (status IN ('open', 'in_progress', 'resolved')),
 
-        reporter_id INTEGER NOT NULL,
+        reporter_id INTEGER NOT NULL
+          REFERENCES users(id)
+          ON DELETE CASCADE,
 
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 

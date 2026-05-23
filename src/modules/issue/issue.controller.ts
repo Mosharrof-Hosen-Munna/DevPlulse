@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { issueService } from "./issue.service";
+import issueFormatter from "../../utils/issueFormatter";
 
 const createIssue = async (req:Request, res: Response) => {
 
@@ -51,10 +52,11 @@ const getAllIssues = async (req:Request, res: Response) => {
 
     const allIssues = await issueService.getAllIssuesFromDB({ sort: sort as string, type: type as string, status: status as string });
 
-   res.status(200).json({
-        success:true,
-        message:'Issues retrieved successfully',
-        data:allIssues
+    const formattedData = allIssues.map((issue) => issueFormatter(issue));
+
+     res.status(200).json({
+      success: true,
+      data: formattedData,
     });
 
 
@@ -67,34 +69,65 @@ const getAllIssues = async (req:Request, res: Response) => {
     }
 }
 
-const getSingleIssue = (req:Request, res: Response) => {
-    res.status(200).json({
-        status:'success',
-        data:{
-            title:'Issue 1',
-            description:'This is the first issue'
-        }
-    })
-}
+const getSingleIssue = async (req:Request, res: Response) => {
+   try {
+     const {id} = req.params;
 
-const updateIssue = (req:Request, res: Response) => {
-    res.status(200).json({
-        status:'success',
-        data:{
-            title:'Issue 1',
-            description:'This is the first issue'
-        }
-    })
-}
-
-const deleteIssue = (req:Request, res: Response) => {
+    const issue = await issueService.getSingleIssueFromDB(Number(id));
+    const formattedIssue = issueFormatter(issue);
      res.status(200).json({
-        status:'success',
-        data:{
-            title:'Issue 1',
-            description:'This is the first issue'
-        }
-    })
+      success: true,
+      data: formattedIssue,
+    });
+   } catch (error:any) {
+        res.status(500).json({
+            success:false,
+            message:error.message,
+           errors:error
+        });
+    }
+}
+
+const updateIssue = async (req:Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+    const updatedIssue = await issueService.updateIssueInDB(
+      Number(id),
+      req.user as any,
+      req.body
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: updatedIssue,
+    });
+    } catch (error:any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            errors: error
+        });
+    }
+}
+
+const deleteIssue = async (req:Request, res: Response) => {
+     try {
+    const { id } = req.params;
+
+    await issueService.deleteIssueFromDB(Number(id), req.user as any);
+
+    return res.status(200).json({
+      success: true,
+      message: "Issue deleted successfully",
+    });
+  } catch (error: any) {
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 }
 
 export const issueController = {
